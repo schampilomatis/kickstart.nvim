@@ -536,6 +536,7 @@ require('lazy').setup({
                 autopep8 = { enabled = false },
                 pyflakes = { enabled = false },
                 pylint = { enabled = true },
+                mccabe = { enabled = false },
                 pycodestyle = { enabled = false },
               },
             },
