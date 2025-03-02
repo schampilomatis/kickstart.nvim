@@ -200,7 +200,7 @@ require('lazy').setup({
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
-      -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
+      -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`but
       { 'williamboman/mason.nvim', opts = {} },
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
@@ -361,6 +361,7 @@ require('lazy').setup({
             },
           },
         },
+        tailwindcss = {},
       }
 
       local ensure_installed = vim.tbl_keys(servers or {})
@@ -416,6 +417,12 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         python = { 'isort', 'black' },
+        javascript = { 'prettier', 'prettierd' },
+        javascriptreact = { 'prettier', 'prettierd' },
+        typescript = { 'prettier', 'prettierd' },
+        typescriptreact = { 'prettier', 'prettierd' },
+        json = { 'jq' },
+        jsonc = { 'jq' },
       },
     },
   },
@@ -450,6 +457,7 @@ require('lazy').setup({
       'saadparwaiz1/cmp_luasnip',
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'onsails/lspkind.nvim',
     },
     config = function()
       -- See `:help cmp`
@@ -523,6 +531,9 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'terraformls' },
+        },
+        formatting = {
+          format = require('lspkind').cmp_format { before = require('tailwind-tools.cmp').lspkind_format },
         },
       }
     end,
@@ -614,6 +625,34 @@ require('lazy').setup({
   {
     'nvim-treesitter/nvim-treesitter-context',
     opts = {},
+  },
+  {
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    config = function()
+      require('typescript-tools').setup {
+        on_attach = function(client)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end,
+        settings = {
+          tsserver_max_memory = 8092,
+          separate_diagnostic_server = false,
+        },
+      }
+    end,
+  },
+  -- tailwind-tools.lua
+  {
+    'luckasRanarison/tailwind-tools.nvim',
+    name = 'tailwind-tools',
+    build = ':UpdateRemotePlugins',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-telescope/telescope.nvim', -- optional
+      'neovim/nvim-lspconfig', -- optional
+    },
+    opts = {}, -- your configuration
   },
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
