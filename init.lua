@@ -24,8 +24,14 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
+vim.diagnostic.config {
+  signs = true,
+  float = true,
+  underline = true,
+}
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.open_float, { desc = 'Open diagnostic [q]uickfix float window' })
+vim.keymap.set('n', '<leader>Q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
@@ -371,6 +377,7 @@ require('lazy').setup({
                 pylint = { enabled = true },
                 mccabe = { enabled = false },
                 pycodestyle = { enabled = false },
+                pylsp_mypy = { enabled = true, ignore_missing_imports = true },
               },
             },
           },
@@ -437,6 +444,13 @@ require('lazy').setup({
         typescriptreact = { 'prettier', 'prettierd' },
         json = { 'jq' },
         jsonc = { 'jq' },
+      },
+      formatters = {
+        isort = {
+          prepend_args = function()
+            return { '--src', os.getenv 'ISORT_SRC_FOLDER' }
+          end,
+        },
       },
     },
   },
