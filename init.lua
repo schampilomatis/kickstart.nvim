@@ -115,6 +115,7 @@ require('lazy').setup({
         { '<leader>t', group = '[T]est' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
+        { '<leader>a', group = '[A]I Codecompanion' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
