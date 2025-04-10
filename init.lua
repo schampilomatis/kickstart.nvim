@@ -5,7 +5,6 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
 vim.opt.showmode = false
-
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.breakindent = true
 vim.opt.undofile = true
@@ -506,7 +505,7 @@ require('lazy').setup({
   },
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
-
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns',
   { import = 'custom.plugins' },
