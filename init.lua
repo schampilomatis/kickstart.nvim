@@ -431,6 +431,19 @@ require('lazy').setup({
     end,
   },
   {
+    'm4xshen/hardtime.nvim',
+    lazy = false,
+    dependencies = { 'MunifTanjim/nui.nvim' },
+    opts = {
+      disabled_keys = {
+        ['<Up>'] = { 'n' },
+        ['<Down>'] = { 'n' },
+        ['<Left>'] = { 'n' },
+        ['<Right>'] = { 'n' },
+      },
+    },
+  },
+  {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs',
