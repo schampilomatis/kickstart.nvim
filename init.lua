@@ -347,7 +347,7 @@ require('lazy').setup({
       formatters = {
         isort = {
           prepend_args = function()
-            return { '--src', os.getenv 'ISORT_SRC_FOLDER' }
+            return { '--src', os.getenv 'ISORT_SRC_FOLDER' or '.' }
           end,
         },
       },
@@ -391,11 +391,10 @@ require('lazy').setup({
     end,
   },
   {
-    'folke/tokyonight.nvim',
+    'rebelot/kanagawa.nvim',
     priority = 1000,
     init = function()
-      vim.cmd.colorscheme 'tokyonight-moon'
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.colorscheme 'kanagawa'
     end,
   },
   {
