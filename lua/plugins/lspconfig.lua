@@ -102,10 +102,22 @@ return {
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua',
+      'ruff',
     })
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
+    require('which-key').add {
+      {
+        '<leader>ri',
+        function()
+          vim.cmd 'w'
+          local file = vim.fn.expand '%'
+          vim.cmd('silent !ruff check ' .. file .. ' --fix')
+          vim.cmd 'edit'
+        end,
+        desc = 'remove unused imports (python)',
+      },
+    }
     for name, config in pairs(servers) do
       config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, config.capabilities or {})
       require('lspconfig')[name].setup(config)
