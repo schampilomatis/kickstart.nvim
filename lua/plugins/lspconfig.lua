@@ -80,23 +80,7 @@ return {
         },
       },
       terraformls = {},
-      pylsp = {
-        settings = {
-          pylsp = {
-            plugins = {
-              autopep8 = { enabled = false },
-              pyflakes = { enabled = false },
-              pylint = { enabled = true },
-              mccabe = { enabled = false },
-              pycodestyle = { enabled = false },
-              pylsp_mypy = { enabled = true, ignore_missing_imports = true },
-              pylsp_rope = { enabled = true },
-              rope_autoimport = { enabled = true },
-              rope_completion = { enabled = true },
-            },
-          },
-        },
-      },
+      pyright = {},
       tailwindcss = {},
     }
     local ensure_installed = vim.tbl_keys(servers or {})
