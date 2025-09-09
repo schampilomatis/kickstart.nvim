@@ -82,11 +82,13 @@ return {
       terraformls = {},
       pyright = {},
       tailwindcss = {},
+      clangd = {},
     }
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua',
       'ruff',
+      'clang-format',
     })
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }

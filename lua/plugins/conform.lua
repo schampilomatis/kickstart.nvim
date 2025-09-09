@@ -36,6 +36,8 @@ return {
       typescriptreact = { 'prettier', 'prettierd' },
       json = { 'jq' },
       jsonc = { 'jq' },
+      c = { 'clang-format' },
+      cpp = { 'clang-format' },
     },
     formatters = {
       isort = {
