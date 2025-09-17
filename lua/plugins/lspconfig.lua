@@ -83,6 +83,11 @@ return {
       pyright = {},
       tailwindcss = {},
       clangd = {},
+      zls = {
+        settings = {
+          zls = { enable_build_on_save = true, semantic_tokens = 'partial' },
+        },
+      },
     }
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
