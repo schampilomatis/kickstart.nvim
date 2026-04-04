@@ -5,7 +5,22 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
 vim.opt.showmode = false
-vim.opt.clipboard = 'unnamedplus'
+if vim.fn.has 'win32' == 1 then
+  vim.g.clipboard = {
+    name = 'win32yank',
+    copy = {
+      ['+'] = 'win32yank.exe -i --crlf',
+      ['*'] = 'win32yank.exe -i --crlf',
+    },
+    paste = {
+      ['+'] = 'win32yank.exe -o --lf',
+      ['*'] = 'win32yank.exe -o --lf',
+    },
+    cache_enabled = 1,
+  }
+else
+  vim.g.clipboard = 'unnamedplus'
+end
 vim.opt.breakindent = true
 vim.opt.smartindent = true
 vim.opt.undofile = true
@@ -26,6 +41,7 @@ vim.diagnostic.config {
   float = true,
   underline = true,
 }
+vim.g.loaded_matchparen = 1
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.open_float, { desc = 'Open diagnostic [q]uickfix float window' })
 vim.keymap.set('n', '<leader>Q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -46,6 +62,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
+vim.opt.exrc = true
 
 require('lazy').setup({
   { import = 'plugins' },

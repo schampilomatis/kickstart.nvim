@@ -1,13 +1,18 @@
 return {
   'nvim-telescope/telescope.nvim',
+  tag = 'v0.2.2',
   event = 'VimEnter',
-  branch = '0.1.x',
   dependencies = {
     'nvim-lua/plenary.nvim',
     {
       'nvim-telescope/telescope-fzf-native.nvim',
-      build = 'make',
+      build = vim.fn.has 'win32' == 1
+          and 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
+        or 'make',
       cond = function()
+        if vim.fn.has 'win32' == 1 then
+          return vim.fn.executable 'cmake' == 1
+        end
         return vim.fn.executable 'make' == 1
       end,
     },

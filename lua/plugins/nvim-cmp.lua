@@ -29,10 +29,6 @@ return {
         { name = 'path' },
         { name = 'terraformls' },
       },
-      formatting = {
-        format = require('lspkind').cmp_format { before = require('tailwind-tools.cmp').lspkind_format },
-      },
     }
   end,
 }
-

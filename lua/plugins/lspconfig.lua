@@ -81,7 +81,6 @@ return {
       },
       terraformls = {},
       pyright = {},
-      tailwindcss = {},
       clangd = {},
       zls = {
         settings = {
