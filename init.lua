@@ -40,6 +40,7 @@ vim.diagnostic.config {
   signs = true,
   float = true,
   underline = true,
+  virtual_text = true,
 }
 vim.g.loaded_matchparen = 1
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
