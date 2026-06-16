@@ -3,7 +3,7 @@ return {
   'neovim/nvim-lspconfig',
   dependencies = {
     { 'williamboman/mason.nvim', opts = {} },
-    'williamboman/mason-lspconfig.nvim',
+    { 'williamboman/mason-lspconfig.nvim', opts = { automatic_installation = true } },
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     { 'j-hui/fidget.nvim', opts = {} },
     'hrsh7th/cmp-nvim-lsp',
@@ -28,7 +28,7 @@ return {
         map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
         local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
           local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
           vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
             buffer = event.buf,
@@ -50,7 +50,7 @@ return {
             end,
           })
         end
-        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
           map('<leader>th', function()
             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
           end, '[T]oggle Inlay [H]ints')
@@ -67,8 +67,7 @@ return {
       vim.diagnostic.config { signs = { text = diagnostic_signs } }
     end
 
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+    local capabilities = require('cmp_nvim_lsp').default_capabilities()
     local servers = {
       lua_ls = {
         settings = {
@@ -93,6 +92,7 @@ return {
       'stylua',
       'ruff',
       'clang-format',
+      'tree-sitter-cli',
     })
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -102,15 +102,20 @@ return {
         function()
           vim.cmd 'w'
           local file = vim.fn.expand '%'
-          vim.cmd('silent !ruff check ' .. file .. ' --fix')
-          vim.cmd 'edit'
+          vim.system({ 'ruff', 'check', file, '--fix' }, { text = true }, function()
+            vim.schedule(function()
+              vim.cmd 'edit'
+            end)
+          end)
         end,
         desc = 'remove unused imports (python)',
       },
     }
+
+    vim.lsp.config('*', { capabilities = capabilities })
     for name, config in pairs(servers) do
-      config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, config.capabilities or {})
-      require('lspconfig')[name].setup(config)
+      vim.lsp.config(name, config)
     end
+    vim.lsp.enable(vim.tbl_keys(servers))
   end,
 }

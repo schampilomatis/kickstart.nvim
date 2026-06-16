@@ -19,7 +19,7 @@ if vim.fn.has 'win32' == 1 then
     cache_enabled = 1,
   }
 else
-  vim.g.clipboard = 'unnamedplus'
+  vim.opt.clipboard = 'unnamedplus'
 end
 vim.opt.breakindent = true
 vim.opt.smartindent = true

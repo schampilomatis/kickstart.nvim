@@ -119,7 +119,7 @@ return {
 
       require('dap-python').setup 'python'
 
-      local project_dap_config = vim.fn.getcwd() .. '/.nvim/lua/dap_config.lua'
+      local project_dap_config = vim.fs.joinpath(vim.fn.getcwd(), '.nvim', 'lua', 'dap_config.lua')
       if vim.fn.filereadable(project_dap_config) == 1 then
         dofile(project_dap_config)
       end
