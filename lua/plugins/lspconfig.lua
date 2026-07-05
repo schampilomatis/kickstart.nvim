@@ -9,6 +9,12 @@ return {
     'hrsh7th/cmp-nvim-lsp',
   },
   config = function()
+    -- Keep lsp.log from ballooning (it hit 146MB): only log real problems.
+    vim.lsp.log.set_level('WARN')
+
+    -- Fast recovery from a desynced/stuck LSP without restarting nvim.
+    vim.keymap.set('n', '<leader>lr', '<cmd>LspRestart<cr>', { desc = 'LSP: [R]estart' })
+
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
       callback = function(event)
@@ -81,6 +87,15 @@ return {
       terraformls = {},
       pyright = {},
       clangd = {},
+      gopls = {
+        settings = {
+          gopls = {
+            gofumpt = true,
+            staticcheck = true,
+            analyses = { unusedparams = true, unusedwrite = true },
+          },
+        },
+      },
       zls = {
         settings = {
           zls = { enable_build_on_save = true, semantic_tokens = 'partial' },

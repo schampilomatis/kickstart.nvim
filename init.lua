@@ -4,6 +4,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
+vim.opt.termguicolors = true
 vim.opt.showmode = false
 if vim.fn.has 'win32' == 1 then
   vim.g.clipboard = {
