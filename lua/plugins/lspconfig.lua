@@ -10,10 +10,35 @@ return {
   },
   config = function()
     -- Keep lsp.log from ballooning (it hit 146MB): only log real problems.
-    vim.lsp.log.set_level('WARN')
+    vim.lsp.log.set_level 'WARN'
 
     -- Fast recovery from a desynced/stuck LSP without restarting nvim.
     vim.keymap.set('n', '<leader>lr', '<cmd>LspRestart<cr>', { desc = 'LSP: [R]estart' })
+
+    do
+      local orig_rename = vim.lsp.handlers['textDocument/rename']
+      vim.lsp.handlers['textDocument/rename'] = function(err, result, ctx)
+        if result then
+          if result.documentChanges then
+            for _, change in ipairs(result.documentChanges) do
+              if change.edits then
+                for _, edit in ipairs(change.edits) do
+                  edit.annotationId = nil
+                end
+              end
+            end
+          end
+          if result.changes then
+            for _, edits in pairs(result.changes) do
+              for _, edit in ipairs(edits) do
+                edit.annotationId = nil
+              end
+            end
+          end
+        end
+        return orig_rename(err, result, ctx)
+      end
+    end
 
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),

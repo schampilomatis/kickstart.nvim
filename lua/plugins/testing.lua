@@ -14,6 +14,18 @@ return {
     }
 
     vim.api.nvim_set_keymap('n', '<leader>tt', "<cmd>lua require('neotest').run.run()<CR>", { noremap = true, silent = true, desc = 'Run current [T]est' })
+
+    local function test_root()
+      local env = vim.env.NVIM_TEST_ROOT
+      if env and env ~= '' then
+        return vim.fn.fnamemodify(vim.fs.normalize(env), ':p')
+      end
+      return vim.fn.getcwd()
+    end
+
+    vim.keymap.set('n', '<leader>ta', function()
+      require('neotest').run.run(test_root())
+    end, { desc = 'Run [A]ll tests' })
     vim.api.nvim_set_keymap(
       'n',
       '<leader>td',

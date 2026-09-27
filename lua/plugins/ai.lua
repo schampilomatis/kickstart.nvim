@@ -9,7 +9,12 @@ return {
     config = function()
       require('codeium').setup {
         enable_cmp_source = false,
-        virtual_text = { enabled = true },
+        virtual_text = {
+          enabled = true,
+          key_bindings = {
+            accept = '<S-Tab>',
+          },
+        },
       }
     end,
   },

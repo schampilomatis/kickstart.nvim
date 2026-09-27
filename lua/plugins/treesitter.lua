@@ -29,6 +29,7 @@ return {
       'luadoc',
       'markdown',
       'markdown_inline',
+      'puppet',
       'python',
       'query',
       'terraform',
