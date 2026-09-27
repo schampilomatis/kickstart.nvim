@@ -13,7 +13,26 @@ return {
     vim.lsp.log.set_level 'WARN'
 
     -- Fast recovery from a desynced/stuck LSP without restarting nvim.
-    vim.keymap.set('n', '<leader>lr', '<cmd>LspRestart<cr>', { desc = 'LSP: [R]estart' })
+    -- (nvim-lspconfig v2 dropped :LspRestart, so do it via the core API.)
+    vim.keymap.set('n', '<leader>lr', function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      local clients = vim.lsp.get_clients { bufnr = bufnr }
+      if vim.tbl_isempty(clients) then
+        vim.notify('No LSP clients attached to this buffer', vim.log.levels.INFO)
+        return
+      end
+      local names = vim.tbl_map(function(c)
+        return c.name
+      end, clients)
+      for _, client in ipairs(clients) do
+        vim.lsp.stop_client(client.id, true)
+      end
+      vim.notify('Restarting LSP: ' .. table.concat(names, ', '), vim.log.levels.INFO)
+      -- Re-edit re-fires FileType, which re-runs vim.lsp.enable() autostart.
+      vim.defer_fn(function()
+        vim.cmd 'silent! edit'
+      end, 250)
+    end, { desc = 'LSP: [R]estart (buffer)' })
 
     do
       local orig_rename = vim.lsp.handlers['textDocument/rename']
@@ -110,7 +129,12 @@ return {
         },
       },
       terraformls = {},
-      pyright = {},
+      pyright = {
+        -- Pin the root to where pyrightconfig.json + .venv live, so pyright
+        -- never falls back to its "<default workspace root>" (and always
+        -- picks up the configured venv). Ordered: config file wins over .git.
+        root_markers = { 'pyrightconfig.json', 'pyproject.toml', '.git' },
+      },
       clangd = {},
       gopls = {
         settings = {
