@@ -8,9 +8,16 @@ return {
     'nvim-neotest/neotest-python',
   },
   config = function()
+    local neotest_client
     require('neotest').setup {
 
       adapters = { require 'neotest-python' { runner = 'pytest' } },
+      consumers = {
+        _capture_client = function(client)
+          neotest_client = client
+          return {}
+        end,
+      },
     }
 
     vim.api.nvim_set_keymap('n', '<leader>tt', "<cmd>lua require('neotest').run.run()<CR>", { noremap = true, silent = true, desc = 'Run current [T]est' })
@@ -38,6 +45,24 @@ return {
       "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>",
       { noremap = true, silent = true, desc = 'Run current [F]ile' }
     )
+    vim.keymap.set('n', '<leader>tx', function()
+      if not neotest_client then
+        vim.notify('neotest client not ready', vim.log.levels.WARN)
+        return
+      end
+      local nt = require 'neotest'
+      local count = 0
+      for _, aid in ipairs(nt.state.adapter_ids()) do
+        local results = neotest_client:get_results(aid) or {}
+        for pos_id, res in pairs(results) do
+          if res.status == 'failed' then
+            nt.run.run(pos_id)
+            count = count + 1
+          end
+        end
+      end
+      vim.notify('Rerunning ' .. count .. ' failed test(s)')
+    end, { desc = 'Rerun failed tests' })
     vim.api.nvim_set_keymap('n', '<leader>tc', "<cmd>lua require('neotest').run.stop()<CR>", { noremap = true, silent = true, desc = '[C]ancel test' })
     vim.api.nvim_set_keymap('n', '<leader>ts', "<cmd>lua require('neotest').summary.toggle()<CR>", { noremap = true, silent = true, desc = '[S]how summary' })
     vim.api.nvim_set_keymap(
