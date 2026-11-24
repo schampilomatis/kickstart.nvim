@@ -65,6 +65,8 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 vim.opt.exrc = true
 
+require 'claude-tmux'
+
 require('lazy').setup({
   { import = 'plugins' },
 }, {
